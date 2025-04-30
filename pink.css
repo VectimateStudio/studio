@@ -186,19 +186,6 @@ body {
   object-fit: contain;
   background: transparent;
 }
-
-.message.animate-in {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInSlideUp 0.4s ease forwards;
-}
-
-@keyframes fadeInSlideUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 #sceneManager {
   position: fixed;
   top: 10px;
@@ -215,3 +202,17 @@ body {
   margin-top: 6px;
 }
 
+.badge {
+  display: inline-block;
+  font-size: 0.75em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-right: 4px;
+  color: white;
+  font-weight: bold;
+  vertical-align: middle;
+}
+.badge-mod { background: #34aeff; }
+.badge-sub { background: #9147ff; }
+.badge-vip { background: #ff2ebc; }
+.badge-bot { background: #999; }
