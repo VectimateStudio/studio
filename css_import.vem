@@ -1,0 +1,31 @@
+VectimateModAPI.addButton("🎨 Import CSS", () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".css";
+  input.style.display = "none";
+
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const blob = new Blob([reader.result], { type: "text/css" });
+      const url = URL.createObjectURL(blob);
+
+      let styleTag = document.getElementById("userStylesheet");
+      if (!styleTag) {
+        styleTag = document.createElement("link");
+        styleTag.id = "userStylesheet";
+        styleTag.rel = "stylesheet";
+        document.head.appendChild(styleTag);
+      }
+
+      styleTag.href = url;
+      VectimateModAPI.log(`[CSS Mod] Applied stylesheet: ${file.name}`);
+    };
+    reader.readAsText(file);
+  });
+
+  input.click();
+});

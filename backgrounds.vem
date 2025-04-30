@@ -1,0 +1,72 @@
+function ensureBackgroundContainer() {
+  let container = document.getElementById("videoBackgroundContainer");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "videoBackgroundContainer";
+    container.style.position = "fixed";
+    container.style.inset = "0";
+    container.style.zIndex = "-1";
+    container.style.overflow = "hidden";
+    container.style.pointerEvents = "none";
+    document.body.prepend(container);
+  } else {
+    container.innerHTML = "";
+  }
+  return container;
+}
+
+VectimateModAPI.addButton("🎞 Set Background Video", () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "video/mp4";
+  input.style.display = "none";
+  document.body.appendChild(input);
+
+  input.onchange = () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    const container = ensureBackgroundContainer();
+
+    const video = document.createElement("video");
+    video.src = url;
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.style.width = "100%";
+    video.style.height = "100%";
+    video.style.objectFit = "cover";
+
+    container.appendChild(video);
+  };
+
+  input.click();
+});
+
+VectimateModAPI.addButton("🖼 Set Background Image", () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+  input.style.display = "none";
+  document.body.appendChild(input);
+
+  input.onchange = () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    const container = ensureBackgroundContainer();
+
+    const img = document.createElement("img");
+    img.src = url;
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+
+    container.appendChild(img);
+  };
+
+  input.click();
+});

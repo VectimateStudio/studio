@@ -1,0 +1,201 @@
+:root {
+  --background-media: url("cherry-blossom-street.mp4");
+  --background-fallback: url("peakpx.jpg");
+  --background-type: video;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+
+#topControls {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 6px 10px;
+  border-radius: 10px;
+}
+
+#topControls input,
+#topControls button {
+  padding: 5px 10px;
+  font-size: 14px;
+  color: white;
+  background: #333;
+  border: 1px solid #555;
+  border-radius: 6px;
+  outline: none;
+  transition: background 0.2s;
+}
+
+#topControls button:hover {
+  background: #444;
+}
+
+#chatPanel {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 400px;
+  height: 500px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid #f5a;
+  border-radius: 12px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 0 20px rgba(255, 105, 180, 0.4);
+  transition: all 0.3s ease;
+  resize: none;
+  overflow: hidden;
+}
+
+#chatPanel::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  z-index: 11;
+}
+
+.source {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid #fff;
+  resize: none;
+  background: #000;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  transition: all 0.2s ease;
+}
+
+.source video {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  transition: transform 0.2s ease;
+}
+
+.source.resizable-corner::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  background: transparent;
+}
+
+.source.selected {
+  box-shadow: 0 0 18px 4px rgba(255, 105, 180, 0.8);
+  border-color: #f5a;
+  z-index: 5;
+  animation: pulse 1.2s infinite alternate ease-in-out;
+}
+
+.source:hover {
+  box-shadow: 0 0 10px rgba(255, 192, 203, 0.3);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 25px rgba(255, 105, 180, 1);
+  }
+}
+
+#chatDisplay {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: #c68 #222;
+}
+
+#chatDisplay::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chatDisplay::-webkit-scrollbar-thumb {
+  background: #c68;
+  border-radius: 4px;
+}
+
+.message {
+  margin-bottom: 8px;
+}
+
+.username {
+  font-weight: bold;
+  color: #f8c;
+}
+
+.content img {
+  vertical-align: middle;
+}
+
+#sourceTitleBar {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 16px;
+  font-size: 20px;
+  font-family: 'Orbitron', sans-serif;
+  color: #f8c;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid #f8c;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #f8c;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 15;
+}
+
+@keyframes glow {
+  0% { box-shadow: 0 0 10px #f8c; }
+  100% { box-shadow: 0 0 20px #f8c; }
+}
+
+.vrm-screen {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  z-index: 2;
+}
+
+.vrm-screen video {
+  object-fit: contain;
+  background: transparent;
+}
+
+.message.animate-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInSlideUp 0.4s ease forwards;
+}
+
+@keyframes fadeInSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
