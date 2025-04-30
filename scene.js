@@ -33,6 +33,13 @@ function createSource(name, stream, pos = { x: 50, y: 50 }, size = { w: 320, h: 
   sceneArea.appendChild(container);
   return container;
 }
+function stopMediaStream(el) {
+  const video = el.querySelector("video");
+  if (video && video.srcObject) {
+    video.srcObject.getTracks().forEach(track => track.stop());
+  }
+}
+
 
 function setupVRMCanvas(container, stream) {
     const video = document.createElement("video");
@@ -251,10 +258,11 @@ document.getElementById("addVRMScreen").onclick = async () => {
 
 document.getElementById("removeSource").onclick = () => {
   if (selectedSource) {
+    stopMediaStream(selectedSource);
     selectedSource.remove();
     delete sources[getSourceName(selectedSource)];
     selectedSource = null;
-    updateTitle(null)
+    updateTitle(null);
   }
 };
 
@@ -299,7 +307,10 @@ const loadedScenes = [];
 let currentScene = null;
 
 function clearScene() {
-  Object.values(sources).forEach(el => el.remove());
+  Object.values(sources).forEach(el => {
+    stopMediaStream(el);
+    el.remove();
+  });
   Object.keys(sources).forEach(k => delete sources[k]);
 }
 
