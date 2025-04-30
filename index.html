@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VectStream Web Scene</title>
+</head>
+<body>
+
+  <div id="sceneArea"></div>
+
+  <div id="chatPanel">
+    <div id="chatDisplay"></div>
+  </div>
+
+  <div id="topControls">
+    <!-- <input type="text" id="sourceName" placeholder="Source name"> -->
+    <button id="addWebcam">🎥 Webcam</button>
+    <button id="addScreen">🖥 Screen</button>
+    <button id="addVRMScreen">🧍 VRM Screen</button>
+    <button id="removeSource">❌ Remove</button>
+    <button id="hideSource">🙈 Hide</button>
+    <button id="showSource">👁 Show</button>
+    <button id="saveScene">💾 Save</button>
+    <button id="loadScene">📂 Load</button>
+    <button id="importTokenBtn">🔑 Token</button>
+    <button id="loadModBtn">🧩 Load Mod</button>
+    <input type="text" id="toggleKeyInput" placeholder="Keybind (e.g. T)" maxlength="1">
+
+    <input type="file" id="tokenFile" accept="application/json" style="display: none">
+    <input type="file" id="sceneFile" accept="application/json" style="display: none">
+    <input type="file" id="modFileInput" accept=".vem" style="display: none">
+  </div>
+
+  <script type="module" src="capture.js"></script>
+  <script type="module" src="scene.js"></script>
+  <script type="module" src="chat.js"></script>
+  <div id="sourceTitleBar"></div>
+
+  <script>
+    const modBtn = document.getElementById("loadModBtn");
+    const modInput = document.getElementById("modFileInput");
+
+    modBtn.addEventListener("click", () => modInput.click());
+
+    modInput.addEventListener("change", () => {
+      const file = modInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const modCode = reader.result;
+        try {
+          const VectimateModAPI = {
+            sceneArea: document.getElementById("sceneArea"),
+            addButton(label, onClick) {
+              const btn = document.createElement("button");
+              btn.textContent = label;
+              btn.onclick = onClick;
+              document.getElementById("topControls").appendChild(btn);
+            },
+            getSources() {
+              return document.querySelectorAll(".source");
+            },
+            log: console.log,
+            alert: alert,
+          };
+          const modFunc = new Function("VectimateModAPI", modCode);
+          modFunc(VectimateModAPI);
+          console.log(`[Vectimate] Mod loaded: ${file.name}`);
+        } catch (e) {
+          alert("Failed to load mod: " + e.message);
+        }
+      };
+      reader.readAsText(file);
+    });
+  </script>
+
+  <div id="sceneManager" style="position: fixed; top: 10px; right: 10px; z-index: 10; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 10px; color: white; max-width: 240px;">
+    <strong>Scenes</strong>
+    <div id="sceneList" style="margin-top: 6px;"></div>
+  </div>
+
+</body>
+</html>
