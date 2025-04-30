@@ -29,7 +29,6 @@ function createSource(name, stream, pos = { x: 50, y: 50 }, size = { w: 320, h: 
 
   makeDraggable(container);
   setupSelection(container);
-  setupContextMenu(container);
 
   sceneArea.appendChild(container);
   return container;
@@ -201,66 +200,6 @@ document.addEventListener("keydown", e => {
     resizing = false;
   });
 })();
-
-function setupContextMenu(el) {
-  el.addEventListener("contextmenu", e => {
-    e.preventDefault();
-    if (selectedSource !== el) {
-      if (selectedSource) selectedSource.classList.remove("selected");
-      selectedSource = el;
-      el.classList.add("selected");
-    }
-
-    const menu = document.createElement("div");
-    menu.className = "context-menu";
-    menu.style.left = e.pageX + "px";
-    menu.style.top = e.pageY + "px";
-
-    menu.innerHTML = `
-      <button data-action="hide">🙈 Hide</button>
-      <button data-action="remove">❌ Remove</button>
-      <button data-action="duplicate">➕ Duplicate</button>
-    `;
-
-    document.body.appendChild(menu);
-
-    const closeMenu = () => {
-      if (menu) menu.remove();
-      document.removeEventListener("click", closeMenu);
-    };
-
-    menu.addEventListener("click", async e => {
-      const action = e.target.dataset.action;
-      if (!action) return;
-      if (action === "hide") el.style.display = "none";
-      if (action === "remove") {
-        el.remove();
-        delete sources[getSourceName(el)];
-        selectedSource = null;
-        updateTitle(null);
-      }      
-      if (action === "duplicate") {
-        const name = getSourceName(el) + "_copy";
-        const stream = el.querySelector("video")?.srcObject;
-        if (stream) {
-          const copy = createSource(name, stream, {
-            x: parseInt(el.style.left) + 20,
-            y: parseInt(el.style.top) + 20
-          }, {
-            w: parseInt(el.style.width),
-            h: parseInt(el.style.height)
-          });
-          const canvas = el.querySelector("canvas");
-          if (canvas) setupVRMCanvas(copy, stream);
-        }
-      }
-    });
-
-    setTimeout(() => {
-      document.addEventListener("click", closeMenu);
-    }, 10);
-  });
-}
 
 function getSourceName(el) {
   return Object.keys(sources).find(name => sources[name] === el);
@@ -472,6 +411,3 @@ document.addEventListener("keydown", (e) => {
     renderScene(match.data);
   }
 });
-
-
-
