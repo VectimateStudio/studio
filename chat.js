@@ -21,12 +21,17 @@ function parseEmotes(text) {
 
 function addMessage(user, message) {
   const formatted = parseEmotes(message);
-  const html = `<div class="message">
+    const html = `<div class="message animate-in">
     <span class="username">${user}:</span>
     <span class="content">${formatted}</span>
-  </div>`;
+    </div>`;
   chatDisplay.insertAdjacentHTML("beforeend", html);
   chatDisplay.scrollTop = chatDisplay.scrollHeight;
+
+  const msgEl = chatDisplay.lastElementChild;
+  msgEl.addEventListener("animationend", () => {
+    msgEl.classList.remove("animate-in");
+  });
 }
 
 function connectToTwitch(token, username) {
