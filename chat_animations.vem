@@ -13,60 +13,27 @@ if (!document.getElementById("coolChatAnimStyles")) {
       }
     }
 
-    .woosh-message {
+    .message.woosh-message {
       animation: slideInUp 0.3s ease-out forwards;
     }
   `;
   document.head.appendChild(style);
 }
 
-(function overrideAddMessage() {
-  const chatDisplay = document.getElementById("chatDisplay");
-
-  if (!chatDisplay) {
-    console.warn("[Vectimate Mod] chatDisplay not found — deferring...");
-    return setTimeout(overrideAddMessage, 500);
+const observer = new MutationObserver(mutations => {
+  for (const mutation of mutations) {
+    for (const node of mutation.addedNodes) {
+      if (node.nodeType === 1 && node.classList.contains("message")) {
+        node.classList.add("woosh-message");
+      }
+    }
   }
+});
 
-  window.addMessage = function (user, message) {
-    const emotes = {
-      ":D": "354",
-      "Kappa": "25",
-      "<3": "9",
-      "CoolStoryBob": "123171",
-      "PogChamp": "305954156",
-      "LUL": "425618",
-      "4Head": "354",
-      "BibleThump": "86",
-      "FailFish": "360",
-      "Kreygasm": "41",
-      "ResidentSleeper": "245",
-      "VoHiYo": "81273",
-      "HeyGuys": "30259",
-      "SeemsGood": "64138",
-      "NotLikeThis": "58765",
-      "TwitchRPG": "1220085",
-      "BloodTrail": "69",
-      "PJSalt": "36",
-      "SwiftRage": "34",
-      "Keepo": "1902"
-    };
-
-    const pattern = new RegExp("\\b(" + Object.keys(emotes).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|") + ")\\b", "g");
-
-    const formatted = message.replace(pattern, match => {
-      const id = emotes[match];
-      return `<img src="https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/dark/2.0" height="24" alt="${match}">`;
-    });
-
-    const html = `<div class="message woosh-message">
-      <span class="username">${user}:</span>
-      <span class="content">${formatted}</span>
-    </div>`;
-
-    chatDisplay.insertAdjacentHTML("beforeend", html);
-    chatDisplay.scrollTop = chatDisplay.scrollHeight;
-  };
-
-  console.log("[Vectimate Mod] Slide-in chat animation mod loaded with extended emotes.");
-})();
+const chatDisplay = document.getElementById("chatDisplay");
+if (chatDisplay) {
+  observer.observe(chatDisplay, { childList: true });
+  console.log("[Vectimate Mod] Chat animation mod activated.");
+} else {
+  console.warn("[Vectimate Mod] chatDisplay not found — animation not applied.");
+}
