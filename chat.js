@@ -6,32 +6,14 @@ const chatDisplay = document.getElementById("chatDisplay");
 const tokenBtn = document.getElementById("importTokenBtn");
 const tokenFileInput = document.getElementById("tokenFile");
 
-const emotes = {
-  ":D": "354",
-  "Kappa": "25",
-  "<3": "9"
-};
-
-function parseEmotes(text) {
-  return text.replace(/(:D|Kappa|<3)/g, match => {
-    const id = emotes[match];
-    return `<img src="https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/dark/2.0" height="24">`;
-  });
-}
-
 function addMessage(user, message) {
-  const formatted = parseEmotes(message);
-    const html = `<div class="message animate-in">
+  // Placeholder — actual implementation replaced by mod
+  const html = `<div class="message">
     <span class="username">${user}:</span>
-    <span class="content">${formatted}</span>
-    </div>`;
+    <span class="content">${message}</span>
+  </div>`;
   chatDisplay.insertAdjacentHTML("beforeend", html);
   chatDisplay.scrollTop = chatDisplay.scrollHeight;
-
-  const msgEl = chatDisplay.lastElementChild;
-  msgEl.addEventListener("animationend", () => {
-    msgEl.classList.remove("animate-in");
-  });
 }
 
 function connectToTwitch(token, username) {
