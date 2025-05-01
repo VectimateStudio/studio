@@ -21,7 +21,7 @@ sourceNameInput.addEventListener("change", () => {
 
     updateTitle(name);
   } else {
-    alert("Source not found: " + name);
+    console.log("source not found");
   }
 });
 
