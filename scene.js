@@ -6,6 +6,19 @@ const sources = {};
 
 let selectedSource = null;
 const sourceTitleBar = document.getElementById("sourceTitleBar");
+sourceTitleBar.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const name = sourceTitleBar.value.trim();
+    const el = sources[name];
+    if (el) {
+      if (selectedSource) selectedSource.classList.remove("selected");
+      selectedSource = el;
+      el.classList.add("selected");
+      updateTitle(name);
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+});
 
 function updateTitle(name) {
   if (name) {
