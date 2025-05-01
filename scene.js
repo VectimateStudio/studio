@@ -6,6 +6,22 @@ const sources = {};
 
 let selectedSource = null;
 const sourceTitleBar = document.getElementById("sourceTitleBar");
+const sourceNameInput = document.getElementById("sourceName");
+
+sourceNameInput.addEventListener("change", () => {
+  const name = sourceNameInput.value.trim();
+  if (sources[name]) {
+    if (selectedSource) selectedSource.classList.remove("selected");
+    selectedSource = sources[name];
+    selectedSource.classList.add("selected");
+    updateTitle(name);
+  } else {
+    alert("Source not found: " + name);
+  }
+});
+sourceNameInput.addEventListener("keyup", (e) => {
+  if (e.key === "Enter") sourceNameInput.dispatchEvent(new Event("change"));
+});
 
 function updateTitle(name) {
   if (name) {
@@ -267,10 +283,20 @@ document.getElementById("removeSource").onclick = () => {
 };
 
 document.getElementById("hideSource").onclick = () => {
+  if (!selectedSource && sourceNameInput.value.trim()) {
+    const el = sources[sourceNameInput.value.trim()];
+    if (el) el.style.display = "none";
+    return;
+  }
   if (selectedSource) selectedSource.style.display = "none";
 };
 
 document.getElementById("showSource").onclick = () => {
+  if (!selectedSource && sourceNameInput.value.trim()) {
+    const el = sources[sourceNameInput.value.trim()];
+    if (el) el.style.display = "block";
+    return;
+  }
   if (selectedSource) selectedSource.style.display = "block";
 };
 
