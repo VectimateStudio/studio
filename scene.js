@@ -9,10 +9,11 @@ const sourceTitleBar = document.getElementById("sourceTitleBar");
 
 function updateTitle(name) {
   if (name) {
-    sourceTitleBar.textContent = name;
+    sourceTitleBar.value = name;
     sourceTitleBar.style.opacity = "1";
   } else {
-    sourceTitleBar.style.opacity = "0";
+    sourceTitleBar.value = "";
+    sourceTitleBar.style.opacity = "0.5";
   }
 }
 
@@ -267,7 +268,7 @@ document.getElementById("removeSource").onclick = () => {
 };
 
 function getSourceByTitleBar() {
-  const name = sourceTitleBar.textContent.trim();
+  const name = sourceTitleBar.value.trim();
   return sources[name] || null;
 }
 
@@ -280,7 +281,6 @@ document.getElementById("showSource").onclick = () => {
   const target = selectedSource || getSourceByTitleBar();
   if (target) target.style.display = "block";
 };
-
 
 document.getElementById("saveScene").onclick = () => {
   const layout = Object.entries(sources).map(([name, el]) => ({
