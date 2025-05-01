@@ -290,24 +290,37 @@ document.getElementById("removeSource").onclick = () => {
 };
 
 document.getElementById("hideSource").onclick = () => {
-  const target = getSourceByNameOrSelection();
-  if (target) {
-    target.style.display = "none";
-    updateTitle(getSourceName(target));
+  const name = sourceNameInput.value.trim();
+  const source = name && sources[name];
+  if (selectedSource) {
+    selectedSource.style.display = "none";
+    updateTitle(getSourceName(selectedSource));
+  } else if (source) {
+    source.style.display = "none";
+    selectedSource = source;
+    source.classList.add("selected");
+    updateTitle(name);
   } else {
     alert("No source selected or found.");
   }
 };
 
 document.getElementById("showSource").onclick = () => {
-  const target = getSourceByNameOrSelection();
-  if (target) {
-    target.style.display = "block";
-    updateTitle(getSourceName(target));
+  const name = sourceNameInput.value.trim();
+  const source = name && sources[name];
+  if (selectedSource) {
+    selectedSource.style.display = "block";
+    updateTitle(getSourceName(selectedSource));
+  } else if (source) {
+    source.style.display = "block";
+    selectedSource = source;
+    source.classList.add("selected");
+    updateTitle(name);
   } else {
     alert("No source selected or found.");
   }
 };
+
 
 document.getElementById("saveScene").onclick = () => {
   const layout = Object.entries(sources).map(([name, el]) => ({
