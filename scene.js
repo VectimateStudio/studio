@@ -10,18 +10,27 @@ const sourceNameInput = document.getElementById("sourceName");
 
 sourceNameInput.addEventListener("change", () => {
   const name = sourceNameInput.value.trim();
-  if (sources[name]) {
+  const source = sources[name];
+  if (source) {
     if (selectedSource) selectedSource.classList.remove("selected");
-    selectedSource = sources[name];
+
+    selectedSource = source;
     selectedSource.classList.add("selected");
+
+    selectedSource.style.display = "block";
+
     updateTitle(name);
   } else {
     alert("Source not found: " + name);
   }
 });
+
 sourceNameInput.addEventListener("keyup", (e) => {
-  if (e.key === "Enter") sourceNameInput.dispatchEvent(new Event("change"));
+  if (e.key === "Enter") {
+    sourceNameInput.dispatchEvent(new Event("change"));
+  }
 });
+
 
 function updateTitle(name) {
   if (name) {
