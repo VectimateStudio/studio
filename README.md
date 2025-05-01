@@ -1,6 +1,4 @@
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/d0a0dc48-16f8-4453-b32e-53d66defc3f3" width="25%">
-</p>
+<img src="https://github.com/user-attachments/assets/d0a0dc48-16f8-4453-b32e-53d66defc3f3" width="25%">
 <p>The most customizable + open source stream scener.<br>
 Add scenes, webcams, and screens with ease.<br>
 Easily customizable using the ".VEM" mod system.<br>
