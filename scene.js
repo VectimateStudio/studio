@@ -266,13 +266,21 @@ document.getElementById("removeSource").onclick = () => {
   }
 };
 
+function getSourceByTitleBar() {
+  const name = sourceTitleBar.textContent.trim();
+  return sources[name] || null;
+}
+
 document.getElementById("hideSource").onclick = () => {
-  if (selectedSource) selectedSource.style.display = "none";
+  const target = selectedSource || getSourceByTitleBar();
+  if (target) target.style.display = "none";
 };
 
 document.getElementById("showSource").onclick = () => {
-  if (selectedSource) selectedSource.style.display = "block";
+  const target = selectedSource || getSourceByTitleBar();
+  if (target) target.style.display = "block";
 };
+
 
 document.getElementById("saveScene").onclick = () => {
   const layout = Object.entries(sources).map(([name, el]) => ({
