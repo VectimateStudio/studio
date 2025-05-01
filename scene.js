@@ -262,6 +262,13 @@ toggleInput.addEventListener("input", () => {
   toggleKey = val.length === 1 ? val : null;
 });
 
+function getSourceByNameOrSelection() {
+  if (selectedSource) return selectedSource;
+  const name = sourceNameInput.value.trim();
+  if (name && sources[name]) return sources[name];
+  return null;
+}
+
 document.getElementById("addVRMScreen").onclick = async () => {
   const name = "vrm" + Object.keys(sources).filter(n => n.startsWith("vrm")).length;
   const stream = await getScreenStream();
@@ -283,21 +290,23 @@ document.getElementById("removeSource").onclick = () => {
 };
 
 document.getElementById("hideSource").onclick = () => {
-  if (!selectedSource && sourceNameInput.value.trim()) {
-    const el = sources[sourceNameInput.value.trim()];
-    if (el) el.style.display = "none";
-    return;
+  const target = getSourceByNameOrSelection();
+  if (target) {
+    target.style.display = "none";
+    updateTitle(getSourceName(target));
+  } else {
+    alert("No source selected or found.");
   }
-  if (selectedSource) selectedSource.style.display = "none";
 };
 
 document.getElementById("showSource").onclick = () => {
-  if (!selectedSource && sourceNameInput.value.trim()) {
-    const el = sources[sourceNameInput.value.trim()];
-    if (el) el.style.display = "block";
-    return;
+  const target = getSourceByNameOrSelection();
+  if (target) {
+    target.style.display = "block";
+    updateTitle(getSourceName(target));
+  } else {
+    alert("No source selected or found.");
   }
-  if (selectedSource) selectedSource.style.display = "block";
 };
 
 document.getElementById("saveScene").onclick = () => {
