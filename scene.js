@@ -6,27 +6,13 @@ const sources = {};
 
 let selectedSource = null;
 const sourceTitleBar = document.getElementById("sourceTitleBar");
-sourceTitleBar.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    const name = sourceTitleBar.value.trim();
-    const el = sources[name];
-    if (el) {
-      if (selectedSource) selectedSource.classList.remove("selected");
-      selectedSource = el;
-      el.classList.add("selected");
-      updateTitle(name);
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }
-});
 
 function updateTitle(name) {
   if (name) {
-    sourceTitleBar.value = name;
+    sourceTitleBar.textContent = name;
     sourceTitleBar.style.opacity = "1";
   } else {
-    sourceTitleBar.value = "";
-    sourceTitleBar.style.opacity = "0.5";
+    sourceTitleBar.style.opacity = "0";
   }
 }
 
@@ -280,19 +266,12 @@ document.getElementById("removeSource").onclick = () => {
   }
 };
 
-function getSourceByTitleBar() {
-  const name = sourceTitleBar.value.trim();
-  return sources[name] || null;
-}
-
 document.getElementById("hideSource").onclick = () => {
-  const target = selectedSource || getSourceByTitleBar();
-  if (target) target.style.display = "none";
+  if (selectedSource) selectedSource.style.display = "none";
 };
 
 document.getElementById("showSource").onclick = () => {
-  const target = selectedSource || getSourceByTitleBar();
-  if (target) target.style.display = "block";
+  if (selectedSource) selectedSource.style.display = "block";
 };
 
 document.getElementById("saveScene").onclick = () => {
