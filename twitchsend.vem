@@ -1,4 +1,4 @@
-VectimateModAPI.addButton("💬 enable MSG", () => {
+VectimateModAPI.addButton("💬 MSG", () => {
   const api = window.VectimateChatAPI;
 
   if (!api?.addMessage || !api?.getChatDisplay || !api?.connectToTwitch) {
@@ -11,15 +11,18 @@ VectimateModAPI.addButton("💬 enable MSG", () => {
 
   const wrapper = document.createElement("div");
   wrapper.id = "chatInputWrapper";
-  wrapper.style.marginTop = "10px";
+  wrapper.style.marginTop = "6px";
   wrapper.style.display = "flex";
   wrapper.style.gap = "5px";
+  wrapper.style.padding = "5px";
+  wrapper.style.borderTop = "1px solid #444";
+  wrapper.style.background = "rgba(0,0,0,0.5)";
 
   const input = document.createElement("input");
   input.type = "text";
   input.placeholder = "Send message to Twitch chat...";
   input.style.flex = "1";
-  input.style.padding = "5px";
+  input.style.padding = "6px";
   input.style.borderRadius = "6px";
   input.style.border = "1px solid #666";
   input.style.background = "#1e1e1e";
@@ -27,7 +30,7 @@ VectimateModAPI.addButton("💬 enable MSG", () => {
 
   const button = document.createElement("button");
   button.textContent = "Send";
-  button.style.padding = "5px 12px";
+  button.style.padding = "6px 14px";
   button.style.borderRadius = "6px";
   button.style.border = "none";
   button.style.background = "#9147ff";
@@ -36,15 +39,15 @@ VectimateModAPI.addButton("💬 enable MSG", () => {
 
   wrapper.appendChild(input);
   wrapper.appendChild(button);
-  chatDisplay.parentElement?.appendChild(wrapper);
+  chatDisplay.parentElement.appendChild(wrapper);
 
   let twitchClient = null;
   let twitchUsername = null;
 
   api.onConnected = (client) => {
     twitchClient = client;
-    twitchUsername = client.getOptions().identity.username;
-    console.log("[Chat Input Mod] Connected to Twitch as:", twitchUsername);
+    twitchUsername = client.getOptions().channels[0];
+    console.log("[Chat Input Mod] Connected as:", twitchUsername);
   };
 
   const sendMessage = () => {
@@ -54,25 +57,27 @@ VectimateModAPI.addButton("💬 enable MSG", () => {
     if (twitchClient && twitchUsername) {
       twitchClient.say(twitchUsername, msg)
         .then(() => {
-          const badge = `<span class="badge badge-mod">You</span>`;
-          const userHtml = `${badge} <span class="username">${twitchUsername}:</span>`;
+          const userHtml = `<span class="username">${twitchUsername}:</span>`;
           api.addMessage(userHtml, msg);
         })
         .catch(err => {
           alert("Failed to send message to Twitch: " + err.message);
         });
     } else {
-      const userHtml = `<span class="badge badge-bot">Offline</span> <span class="username">You:</span>`;
-      api.addMessage(userHtml, msg);
+      api.addMessage(`<span class="username">NOT LOGGED IN:</span>`, msg);
     }
 
     input.value = "";
+    input.focus();
   };
 
   button.onclick = sendMessage;
   input.addEventListener("keydown", e => {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
   });
 
-  console.log("[Vectimate Mod] Twitch chat input enabled.");
+  console.log("[Vectimate Mod] Chat input box added to chat panel.");
 });
