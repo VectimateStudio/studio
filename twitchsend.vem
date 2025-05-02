@@ -44,10 +44,18 @@ VectimateModAPI.addButton("💬 MSG", () => {
   let twitchClient = null;
   let twitchUsername = null;
 
+  // Safely hook into onConnected without breaking others
+  const originalOnConnected = api.onConnected;
   api.onConnected = (client) => {
     twitchClient = client;
     twitchUsername = client.getOptions().channels[0];
+    window.__twitchClient = twitchClient;
+    window.__twitchUsername = twitchUsername;
     console.log("[Chat Input Mod] Connected as:", twitchUsername);
+
+    if (typeof originalOnConnected === "function") {
+      originalOnConnected(client);
+    }
   };
 
   const sendMessage = () => {
