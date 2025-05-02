@@ -459,11 +459,9 @@ sceneFileInput.addEventListener("change", async e => {
   }
 });
 
-document.addEventListener("keydown", (e) => {
-  if (document.activeElement.tagName === "INPUT") return;
-  if (!toggleKey) return;
+document.addEventListener("keydown", (e) => {  const key = e.key.toLowerCase();
 
-  if (e.key.toLowerCase() === toggleKey) {
+  if (toggleKey && key === toggleKey) {
     const menu = document.getElementById("topControls");
     const sceneManager = document.getElementById("sceneManager");
 
@@ -472,7 +470,6 @@ document.addEventListener("keydown", (e) => {
     sceneManager.style.display = visible ? "none" : "block";
   }
 
-  const key = e.key.toLowerCase();
   const match = loadedScenes.find(scene => scene.key === key);
   if (match) {
     currentScene = match;
