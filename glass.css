@@ -1,0 +1,258 @@
+:root {
+  --background-media: url("cherry-blossom-street.mp4");
+  --background-fallback: url("peakpx.jpg");
+  --background-type: video;
+
+  --glass-bg: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 182, 193, 0.3);
+  --pink-glow: rgba(255, 105, 180, 0.6);
+  --hot-pink: #f8c;
+  --scroll-thumb: #f8c;
+  --scroll-track: #222;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  color: white;
+}
+
+#topControls {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 24px var(--pink-glow);
+  transition: all 0.3s ease;
+  animation: floaty 3s ease-in-out infinite;
+}
+
+#topControls input,
+#topControls button {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: white;
+  background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid var(--hot-pink);
+  border-radius: 10px;
+  outline: none;
+  backdrop-filter: blur(6px);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+#topControls button:hover {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 0 14px var(--hot-pink), 0 0 4px white inset;
+}
+
+#chatPanel {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 400px;
+  height: 500px;
+  background: var(--glass-bg);
+  border: 2px solid var(--hot-pink);
+  border-radius: 16px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 30px var(--pink-glow);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  animation: floaty 3s ease-in-out infinite;
+}
+
+#chatPanel::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  z-index: 11;
+}
+
+#chatDisplay {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  font-size: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+#chatDisplay::-webkit-scrollbar {
+  width: 6px;
+}
+
+#chatDisplay::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 4px;
+}
+
+.message {
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.message:hover {
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 4px;
+}
+
+.username {
+  font-weight: bold;
+  color: var(--hot-pink);
+}
+
+.content img {
+  vertical-align: middle;
+}
+#sourceTitleBar {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 8px 20px;
+  font-size: 20px;
+  font-family: 'Orbitron', sans-serif;
+  color: var(--hot-pink);
+  background: var(--glass-bg);
+  border: 2px solid var(--hot-pink);
+  border-radius: 12px;
+  box-shadow: 0 0 20px var(--hot-pink);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 15;
+}
+
+.source {
+  position: absolute;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 2px solid #fff;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.source video {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  transition: transform 0.2s ease;
+}
+
+.source.resizable-corner::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 20px;
+  height: 20px;
+  cursor: nwse-resize;
+  background: transparent;
+}
+
+.source.selected {
+  box-shadow: 0 0 20px 6px var(--pink-glow);
+  border-color: var(--hot-pink);
+  z-index: 5;
+  animation: sparklePulse 1.8s infinite;
+}
+
+.source:hover {
+  box-shadow: 0 0 12px rgba(255, 192, 203, 0.4);
+}
+
+#sceneManager {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 12px;
+  border-radius: 14px;
+  color: white;
+  max-width: 240px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 20px var(--pink-glow);
+  animation: floaty 3s ease-in-out infinite;
+}
+
+#sceneList {
+  margin-top: 8px;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-right: 4px;
+  color: white;
+  font-weight: bold;
+  vertical-align: middle;
+  backdrop-filter: blur(6px);
+}
+
+.badge-mod { background: #34aeff; }
+.badge-sub { background: #9147ff; }
+.badge-vip { background: #ff2ebc; }
+.badge-bot { background: #999; }
+
+.vrm-screen {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  z-index: 2;
+}
+
+.vrm-screen video {
+  object-fit: contain;
+  background: transparent;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 10px var(--pink-glow); }
+  100% { box-shadow: 0 0 25px var(--hot-pink); }
+}
+
+@keyframes sparklePulse {
+  0% { box-shadow: 0 0 10px var(--hot-pink); }
+  50% { box-shadow: 0 0 25px #fff0f5; }
+  100% { box-shadow: 0 0 10px var(--hot-pink); }
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 20%;
+  left: 10%;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, #ffb6c1 20%, transparent 70%);
+  filter: blur(24px);
+  animation: floaty 6s ease-in-out infinite;
+  opacity: 0.4;
+  z-index: 0;
+}
