@@ -242,17 +242,3 @@ body {
   50% { box-shadow: 0 0 25px #fff0f5; }
   100% { box-shadow: 0 0 10px var(--hot-pink); }
 }
-
-body::before {
-  content: "";
-  position: fixed;
-  top: 20%;
-  left: 10%;
-  width: 100px;
-  height: 100px;
-  background: radial-gradient(circle, #ffb6c1 20%, transparent 70%);
-  filter: blur(24px);
-  animation: floaty 6s ease-in-out infinite;
-  opacity: 0.4;
-  z-index: 0;
-}
