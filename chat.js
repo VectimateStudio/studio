@@ -66,7 +66,8 @@ let overrideAddMessage = null;
 
 function connectToTwitch(token, username) {
   console.log(`[chat.js] Connecting as ${username}`);
-
+  window.__twitchToken = token;
+  window.__twitchUsername = username;
   const client = new tmi.Client({
     identity: {
       username,
@@ -104,7 +105,12 @@ window.VectimateChatAPI = {
   overrideAddMessage: (fn) => overrideAddMessage = fn,
   onConnected: null,
   connectToTwitch,
-  getChatDisplay: () => chatDisplay
+  getChatDisplay: () => chatDisplay,
+  getCredentials: () => ({
+    token: window.__twitchToken || null,
+    username: window.__twitchUsername || null
+  })
+
 };
 
 
