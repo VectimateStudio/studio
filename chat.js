@@ -75,7 +75,7 @@ function connectToTwitch(token, username) {
     },
     channels: [username]
   });
-
+  twitchClient = client;
   client.connect().catch(err => console.error("Failed to connect:", err));
 
   client.on("message", (channel, tags, message, self) => {
@@ -95,7 +95,20 @@ function connectToTwitch(token, username) {
 
   return client;
 }
+let twitchClient = null;
 
+function disconnectFromTwitch() {
+  if (twitchClient) {
+    twitchClient.disconnect().then(() => {
+      console.log("[chat.js] Disconnected from Twitch.");
+    }).catch(err => {
+      console.error("[chat.js] Failed to disconnect:", err);
+    });
+    twitchClient = null;
+  } else {
+    console.warn("[chat.js] No active Twitch client to disconnect.");
+  }
+}
 
 window.VectimateChatAPI = {
   addMessage,
