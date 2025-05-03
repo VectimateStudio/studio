@@ -1,108 +1,113 @@
-VectimateModAPI.addButton("💬 MSG", () => {
-  const api = window.VectimateChatAPI;
+VectimateModAPI.addButton("💬 MSG", async () => {
+  const waitForAPI = () => new Promise((resolve, reject) => {
+    let tries = 0;
+    const interval = setInterval(() => {
+      const api = window.VectimateChatAPI;
+      if (api?.addMessage && api?.getChatDisplay && api?.connectToTwitch) {
+        clearInterval(interval);
+        resolve(api);
+      } else if (++tries > 50) {
+        clearInterval(interval);
+        reject(new Error("VectimateChatAPI did not become available in time."));
+      }
+    }, 100);
+  });
 
-  if (!api?.addMessage || !api?.getChatDisplay || !api?.connectToTwitch || !api?.getCredentials) {
-    alert("VectimateChatAPI is not fully available.");
+  let api;
+  try {
+    api = await waitForAPI();
+  } catch (err) {
+    alert(err.message);
     return;
   }
 
-  const creds = api.getCredentials();
-  if (!creds.token || !creds.username) {
-    alert("You're not connected to Twitch. Please import your token first.");
-    return;
-  }
+  const chatDisplay = api.getChatDisplay();
+  if (!chatDisplay || document.getElementById("chatInputWrapper")) return;
+
+  const wrapper = document.createElement("div");
+  wrapper.id = "chatInputWrapper";
+  wrapper.style.marginTop = "6px";
+  wrapper.style.display = "flex";
+  wrapper.style.gap = "5px";
+  wrapper.style.padding = "5px";
+  wrapper.style.borderTop = "1px solid #444";
+  wrapper.style.background = "rgba(0,0,0,0.5)";
+
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "Send message to Twitch chat...";
+  Object.assign(input.style, {
+    flex: "1",
+    padding: "6px",
+    borderRadius: "6px",
+    border: "1px solid #666",
+    background: "#1e1e1e",
+    color: "#fff"
+  });
+
+  const button = document.createElement("button");
+  button.textContent = "Send";
+  Object.assign(button.style, {
+    padding: "6px 14px",
+    borderRadius: "6px",
+    border: "none",
+    background: "#9147ff",
+    color: "#fff",
+    cursor: "pointer"
+  });
+
+  wrapper.appendChild(input);
+  wrapper.appendChild(button);
+  chatDisplay.parentElement.appendChild(wrapper);
 
   let twitchClient = null;
   let twitchUsername = null;
 
-  const originalOnConnected = api.onConnected;
   api.onConnected = (client) => {
     twitchClient = client;
-    twitchUsername = client.getOptions().identity.username;
-    console.log("[💬 MSG] Connected as", twitchUsername);
-
-    if (typeof originalOnConnected === "function") {
-      try {
-        originalOnConnected(client);
-      } catch (err) {
-        console.warn("[💬 MSG] Error in original onConnected:", err);
-      }
+    try {
+      twitchUsername = client.getOptions().identity.username;
+    } catch {
+      twitchUsername = window.__twitchUsername;
     }
 
-    setupInputBox();
+    console.log("[💬 MSG] Connected as", twitchUsername);
   };
 
-  api.connectToTwitch(creds.token, creds.username);
-
-  function setupInputBox() {
-    const chatDisplay = api.getChatDisplay();
-    if (!chatDisplay || document.getElementById("chatInputWrapper")) return;
-
-    const wrapper = document.createElement("div");
-    wrapper.id = "chatInputWrapper";
-    wrapper.style.marginTop = "6px";
-    wrapper.style.display = "flex";
-    wrapper.style.gap = "5px";
-    wrapper.style.padding = "5px";
-    wrapper.style.borderTop = "1px solid #444";
-    wrapper.style.background = "rgba(0,0,0,0.5)";
-
-    const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = "Send message to Twitch chat...";
-    Object.assign(input.style, {
-      flex: "1",
-      padding: "6px",
-      borderRadius: "6px",
-      border: "1px solid #666",
-      background: "#1e1e1e",
-      color: "#fff"
-    });
-
-    const button = document.createElement("button");
-    button.textContent = "Send";
-    Object.assign(button.style, {
-      padding: "6px 14px",
-      borderRadius: "6px",
-      border: "none",
-      background: "#9147ff",
-      color: "#fff",
-      cursor: "pointer"
-    });
-
-    wrapper.appendChild(input);
-    wrapper.appendChild(button);
-    chatDisplay.parentElement.appendChild(wrapper);
-
-    const sendMessage = () => {
-      const msg = input.value.trim();
-      if (!msg) return;
-
-      if (!twitchClient || !twitchUsername) {
-        alert("Not connected to Twitch.");
-        return;
-      }
-
-      twitchClient.say(twitchUsername, msg)
-        .then(() => {
-          const userHtml = `<span class="username">${twitchUsername}:</span>`;
-          api.addMessage(userHtml, msg);
-          input.value = "";
-          input.focus();
-        })
-        .catch(err => {
-          alert("Failed to send message: " + err.message);
-        });
-    };
-
-    button.onclick = sendMessage;
-    input.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
-    console.log("[💬 MSG] Input box added successfully.");
+  const creds = api.getCredentials();
+  if (creds.token && creds.username) {
+    console.log("[💬 MSG] Attempting to re-use token to connect...");
+    api.connectToTwitch(creds.token, creds.username);
   }
+
+  const sendMessage = () => {
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    if (!twitchClient || !twitchUsername) {
+      alert("You're not connected to Twitch. Please load your token first.");
+      return;
+    }
+
+    twitchClient.say(twitchUsername, msg)
+      .then(() => {
+        const userHtml = `<span class="username">${twitchUsername}:</span>`;
+        //api.addMessage(userHtml, msg);
+        input.value = "";
+        input.focus();
+      })
+      .catch(err => {
+        alert("Failed to send message: " + err.message);
+      });
+  };
+
+  button.onclick = sendMessage;
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  console.log("[💬 MSG] Input box added successfully.");
 });
