@@ -75,7 +75,7 @@ function connectToTwitch(token, username) {
     },
     channels: [username]
   });
-  window.twitchClient = client;
+  twitchClient = client;
   client.connect().catch(err => console.error("Failed to connect:", err));
 
   client.on("message", (channel, tags, message, self) => {
@@ -96,16 +96,6 @@ function connectToTwitch(token, username) {
   return client;
 }
 
-(function autoConnectFromLocalStorage() {
-  const token = localStorage.getItem("twitch_token");
-  const username = localStorage.getItem("twitch_username");
-  if (token && username) {
-    connectToTwitch(token, username);
-  } else {
-    console.warn("[chat.js] No Twitch credentials in localStorage.");
-  }
-})();
-
 window.VectimateChatAPI = {
   addMessage,
   parseEmotes,
@@ -119,7 +109,9 @@ window.VectimateChatAPI = {
     token: window.__twitchToken || null,
     username: window.__twitchUsername || null
   })
+
 };
+
 
 if (tokenBtn && tokenFileInput) {
   tokenBtn.onclick = () => tokenFileInput.click();
@@ -135,8 +127,6 @@ if (tokenBtn && tokenFileInput) {
       const username = data.username;
 
       if (token && username) {
-        localStorage.setItem("twitch_token", token);
-        localStorage.setItem("twitch_username", username);
         connectToTwitch(token, username);
       } else {
         alert("token.json is missing 'token' or 'username'.");
