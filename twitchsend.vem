@@ -60,29 +60,12 @@ VectimateModAPI.addButton("💬 MSG", async () => {
   wrapper.appendChild(button);
   chatDisplay.parentElement.appendChild(wrapper);
 
-  let twitchClient = null;
-  let twitchUsername = null;
-
-  api.onConnected = (client) => {
-    twitchClient = client;
-    try {
-      twitchUsername = client.getOptions().identity.username;
-    } catch {
-      twitchUsername = window.__twitchUsername;
-    }
-
-    console.log("[💬 MSG] Connected as", twitchUsername);
-  };
-
-  const creds = api.getCredentials();
-  if (creds.token && creds.username) {
-    console.log("[💬 MSG] Attempting to re-use token to connect...");
-    api.connectToTwitch(creds.token, creds.username);
-  }
-
   const sendMessage = () => {
-    const msg = input.value.trim();
+  const msg = input.value.trim();
     if (!msg) return;
+
+    const twitchClient = window.twitchClient;
+    const twitchUsername = window.__twitchUsername;
 
     if (!twitchClient || !twitchUsername) {
       alert("You're not connected to Twitch. Please load your token first.");
@@ -92,7 +75,7 @@ VectimateModAPI.addButton("💬 MSG", async () => {
     twitchClient.say(twitchUsername, msg)
       .then(() => {
         const userHtml = `<span class="username">${twitchUsername}:</span>`;
-        //api.addMessage(userHtml, msg);
+        api.addMessage(userHtml, msg);
         input.value = "";
         input.focus();
       })
