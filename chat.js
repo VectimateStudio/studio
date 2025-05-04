@@ -75,7 +75,7 @@ function connectToTwitch(token, username) {
     },
     channels: [username]
   });
-  twitchClient = client;
+  window.twitchClient = client;
   client.connect().catch(err => console.error("Failed to connect:", err));
 
   client.on("message", (channel, tags, message, self) => {
