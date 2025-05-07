@@ -6,4 +6,4 @@ Easily customizable using the ".VEM" mod system.<br>
 I have posted the needed .vem files you will or might need as a baseline.<br>
 I have tried to make this the most modular and modifiable project.<br>
 Easily customizable with CSS + JavaScript.</p>
-<p>- MikaSukie (or lorielle)
+<p>- MikaSukie (or Mika lorielle)
