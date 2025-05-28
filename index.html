@@ -3,499 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Vectimate Studio</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-<style>
-  /* ==== GLOBAL ==== */
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 80px;
-  }
-  body {
-    margin: 0;
-    background: #000;
-    color: white;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  #main {
-    opacity: 0;
-    transition: opacity 0.6s ease-out;
-  }
-
-/* ==== SPLASH ==== */
-#splash {
-  position: fixed;
-  inset: 0;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  transition: opacity 1.5s ease-out;
-}
-#splash.fade-out {
-  opacity: 0;
-  pointer-events: none;
-}
-/* size the splash SVG */
-#splash svg {
-  width: 300px;
-  height: 300px;
-}
-/* common stroke settings */
-#splash .stroke {
-  fill: none;
-  stroke: white;
-  stroke-width: 30;
-  stroke-linecap: round;
-  stroke-dasharray: 1;      /* will be overridden per-path */
-  stroke-dashoffset: 1;     /* will be overridden per-path */
-}
-/* draw the V in one continuous motion */
-#splash .stroke.v {
-  stroke-dasharray: 402.5;
-  stroke-dashoffset: 402.5;
-  animation: drawV 2.0s ease forwards;
-}
-/* draw the T’s top bar, centered at (230,50) */
-#splash .stroke.t-h {
-  /* total length of bar = 80px (40px each side of 230) */
-  stroke-dasharray: 80;
-  stroke-dashoffset: 80;
-  animation: drawTBar 0.6s ease forwards;
-  animation-delay: 2.0s; /* after the V finishes */
-}
-/* draw the T’s vertical bar */
-#splash .stroke.t-v {
-  stroke-dasharray: 60;
-  stroke-dashoffset: 60;
-  animation: drawTVBar 0.6s ease forwards;
-  animation-delay: 2.6s;
-}
-@keyframes drawV {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes drawTBar {
-  to { stroke-dashoffset: 0; }
-}
-@keyframes drawTVBar {
-  to { stroke-dashoffset: 0; }
-}
-
-  path {
-    fill: none;
-    stroke: white;
-    stroke-width: 30;
-    stroke-linecap: square;
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    animation: drawV 2.5s ease forwards;
-  }
-  path.tbar {
-    animation: drawT 1.5s ease-out forwards;
-    animation-delay: 0.6s;
-  }
-  @keyframes drawV {
-    to { stroke-dashoffset: 0; }
-  }
-  @keyframes drawT {
-    to { stroke-dashoffset: 0; }
-  }
-  @keyframes fadeOut {
-    to {
-      opacity: 0;
-      visibility: hidden;
-    }
-  }
-  .fade-out {
-    animation: fadeOut 1.5s ease-out forwards;
-  }
-
-  /* ==== MAIN CONTENT ==== */
-  #bgCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    filter: blur(50px);
-    mix-blend-mode: screen;
-    z-index: 0;
-  }
-  @keyframes fadeInUp {
-    0% {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* ==== FLOATING ARROW (CSS TRIANGLE) ==== */
-  @keyframes floatArrow {
-    0%,100% { transform: translate(-50%, 0); opacity: 0.6; }
-    50%      { transform: translate(-50%, 10px); opacity: 1; }
-  }
-  .float-arrow {
-    position: fixed;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    pointer-events: none;
-    z-index: 50;
-    animation: floatArrow 2s ease-in-out infinite;
-  }
-  .float-arrow p {
-    margin: 0 0 0.5rem;
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-  }
-  .float-arrow .arrow-triangle {
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 12px solid white;
-  }
-
-  /* ==== OTHER ANIMATIONS ==== */
-  .fade-in-up {
-    animation: fadeInUp 1s ease-out forwards;
-  }
-  .logo {
-    animation: floatLogo 3s ease-in-out infinite;
-  }
-  @keyframes floatLogo {
-    0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-5px); }
-  }
-  .shimmer {
-    animation: shimmerAnim 4s ease-in-out infinite;
-  }
-  @keyframes shimmerAnim {
-    0%, 100% { opacity: 0.8; text-shadow: 0 0 10px #82e4ff; }
-    50%      { opacity: 1;   text-shadow: 0 0 20px #fff; }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .animate-fadeIn {
-    animation: fadeIn 1s ease-out forwards;
-  }
-
-  /* ==== HEADER ==== */
-  header {
-    position: fixed;
-    top: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 50;
-    width: 100%;
-    max-width: 90vw;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1rem;
-  }
-  header .logo-link {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-  }
-  header nav a {
-    margin-left: 0.5rem;
-    padding: 0.5rem 1rem;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    font-size: 0.875rem;
-    transition: background 0.2s;
-    color: white;
-    text-decoration: none;
-  }
-  header nav a:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  /* ==== FADE-IN-SECTIONS ==== */
-  .fade-in-section {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.8s ease-out;
-    will-change: opacity, transform;
-  }
-  .fade-in-section.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-</style>
+  <title>VectStream Web Scene</title>
 </head>
-
 <body>
 
-  <!-- SPLASH -->
-<div id="splash">
-  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vectimate logo">
-    <defs>
-      <linearGradient id="gradStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#3b82f6" />   <!-- Blue -->
-        <stop offset="100%" stop-color="#ec4899" /> <!-- Pink -->
-      </linearGradient>
-    </defs>
+  <div id="sceneArea"></div>
 
-    <!-- continuous V -->
-    <path
-      class="stroke v"
-      d="M50,50 L140,230 L230,50"
-      stroke="url(#gradStroke)"
-      stroke-width="25"
-      stroke-linecap="round"
-    />
-
-    <!-- centered T bar -->
-    <path
-      class="stroke t-h"
-      d="M190,50 L270,50"
-      stroke="url(#gradStroke)"
-      stroke-width="25"
-      stroke-linecap="round"
-    />
-  </svg>
-</div>
-
-
-  <!-- MAIN SITE -->
-  <div id="main">
-    <canvas id="bgCanvas"></canvas>
-
-    <header>
-      <div class="logo-link">
-        <img src="VSU.png" alt="Logo" class="w-8 h-8 rounded-full"/>
-        <a href="#" class="font-bold text-sm bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
-          Vectimate Studio
-        </a>
-      </div>
-      <nav>
-        <a href="#showcase">Showcase</a>
-        <a href="#features">Features</a>
-      </nav>
-    </header>
-
-    <section class="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 space-y-6 pt-20 fade-in-section">
-      <div class="logo-container bg-white/10 backdrop-blur-xl p-6 rounded-full shadow-2xl">
-        <img src="VSU.png" alt="Vectimate Logo" class="logo w-20 h-20 rounded-full" />
-      </div>
-      <h1 class="main-text text-5xl font-extrabold bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">
-        Vectimate Studio
-      </h1>
-      <p class="sub-text max-w-xl text-white/80 leading-relaxed">
-        The most customizable OBS Scene creator.<br>
-        Customize with mods (.vem), CSS, and more!
-      </p>
-
-      <div class="flex flex-col sm:flex-row gap-4 mt-6">
-        <a href="https://vectimatestudio.github.io/studio/" target="_blank"
-           class="px-6 py-3 rounded-full bg-gradient-to-r from-blue-400 to-pink-400 text-black font-semibold shadow-lg hover:scale-105 transition-all">
-          🚀 Launch Vectimate
-        </a>
-        <a href="https://github.com/VectimateStudio/studio" target="_blank"
-           class="px-6 py-3 rounded-full bg-gradient-to-r from-pink-400 to-blue-400 text-black font-semibold shadow-lg hover:scale-105 transition-all">
-          >_ Visit Project
-        </a>
-      </div>
-    </section>
-<div class="float-arrow">
-  <p>Scroll down for more details</p>
-  <div class="arrow-triangle"></div>
-</div>
-    <section id="showcase" class="relative z-10 py-20 px-6 flex flex-col items-center space-y-12 fade-in-section">
-      <h2 class="text-4xl font-bold bg-gradient-to-r from-pink-400 to-blue-400 bg-clip-text text-transparent">🎞️ Demo 🔴</h2>
-      <div class="grid md:grid-cols-2 gap-8 max-w-6xl w-full">
-        <div class="aspect-video bg-white/10 rounded-xl overflow-hidden shadow-xl backdrop-blur-md">
-          <video src="p4.mov" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
-        </div>
-        <div class="aspect-video bg-white/10 rounded-xl overflow-hidden shadow-xl backdrop-blur-md">
-          <video src="p5.mov" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="relative z-10 py-20 px-6 flex flex-col items-center space-y-12 fade-in-section">
-      <h2 class="text-4xl font-bold bg-gradient-to-r from-blue-400 to-pink-400 bg-clip-text text-transparent">💡 Key Features 🧩</h2>
-      <div class="grid md:grid-cols-2 gap-10 max-w-6xl w-full text-white/90 text-sm">
-        <div class="aspect-video bg-white/10 rounded-xl overflow-hidden shadow-xl backdrop-blur-md">
-          <video src="p11.mov" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
-        </div>
-        <p><strong>Mods/Plugin support 🧩</strong><br>.vem files allow you to modify everything using the Vectimate Module API.</p>
-        <div class="aspect-video bg-white/10 rounded-xl overflow-hidden shadow-xl backdrop-blur-md">
-          <video src="p2.mov" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
-        </div>
-        <p><strong>CSS customization 🎨</strong><br>Use CSS to make your streams look beautiful!</p>
-        <div class="aspect-video bg-white/10 rounded-xl overflow-hidden shadow-xl backdrop-blur-md">
-          <video src="p3.mov" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
-        </div>
-        <p><strong>Background Customization 🎨</strong><br>Add animated or static backgrounds with the background mod.</p>
-        <div class="aspect-video bg-white/10 rounded-xl overflow-hidden shadow-xl backdrop-blur-md">
-          <img src="scenes.png" alt="Scene Preview" class="w-full h-full object-cover" />
-        </div>
-        <p><strong>Multiple Scene Support 📺</strong><br>Load and keybind multiple scenes with smooth transitions.</p>
-      </div>
-    </section>
-
-    <!-- bubbles & confetti scripts (unchanged) -->
-    <script>
-      /* Background bubbles omitted for brevity — copy your existing code here */
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script>
-      /* confetti on click… copy your existing code */
-    </script>
-    <script>
-      /* intersection-observer for fade-in sections… copy your existing code */
-    </script>
+  <div id="chatPanel">
+    <div id="chatDisplay"></div>
   </div>
-  <script>
-    window.addEventListener('load', () => {
-      // V (1s) + T (0.6s delay + 0.6s draw) = 2.2s
-      setTimeout(() => {
-        document.getElementById('splash').classList.add('fade-out');
-        setTimeout(() => {
-          document.getElementById('main').style.opacity = '1';
 
-          // now that main is visible, hook up IntersectionObserver
-          const io = new IntersectionObserver((entries, obs) => {
-            entries.forEach(e => {
-              if (e.isIntersecting) {
-                e.target.classList.add('visible');
-                obs.unobserve(e.target);
-              }
-            });
-          }, { threshold: 0.1 });
-          document.querySelectorAll('.fade-in-section').forEach(el => io.observe(el));
-        }, 600);
-      }, 3200);
+  <div id="topControls">
+    <input type="text" id="sourceName" placeholder="Source name">
+    <button id="addWebcam">🎥 Webcam</button>
+    <button id="addScreen">🖥 Screen</button>
+    <button id="addVRMScreen">🧍 VRM Screen</button>
+    <button id="removeSource">❌ Remove</button>
+    <button id="hideSource">🙈 Hide</button>
+    <button id="showSource">👁 Show</button>
+    <button id="saveScene">💾 Save</button>
+    <button id="loadScene">📂 Load</button>
+    <button id="importTokenBtn">🔑 Token</button>
+    <button id="loadModBtn">🧩 Load Mod</button>
+    <input type="text" id="toggleKeyInput" placeholder="Keybind (e.g. f)" maxlength="1">
+
+    <input type="file" id="tokenFile" accept="application/json" style="display: none">
+    <input type="file" id="sceneFile" accept="application/json" style="display: none">
+    <input type="file" id="modFileInput" accept=".vem" style="display: none">
+  </div>
+
+  <script type="module" src="capture.js"></script>
+  <script type="module" src="scene.js"></script>
+  <script type="module" src="chat.js"></script>
+  <div id="sourceTitleBar"></div>
+
+  <script>
+    const modBtn = document.getElementById("loadModBtn");
+    const modInput = document.getElementById("modFileInput");
+
+    modBtn.addEventListener("click", () => modInput.click());
+
+    modInput.addEventListener("change", () => {
+      const file = modInput.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const modCode = reader.result;
+        try {
+          const VectimateModAPI = {
+            sceneArea: document.getElementById("sceneArea"),
+            addButton(label, onClick) {
+              const btn = document.createElement("button");
+              btn.textContent = label;
+              btn.onclick = onClick;
+              document.getElementById("topControls").appendChild(btn);
+            },
+            getSources() {
+              return document.querySelectorAll(".source");
+            },
+            log: console.log,
+            alert: alert,
+          };
+          const modFunc = new Function("VectimateModAPI", modCode);
+          modFunc(VectimateModAPI);
+          console.log(`[Vectimate] Mod loaded: ${file.name}`);
+        } catch (e) {
+          alert("Failed to load mod: " + e.message);
+        }
+      };
+      reader.readAsText(file);
     });
   </script>
-<script>
-  const canvas = document.getElementById("bgCanvas");
-  const ctx = canvas.getContext("2d");
-  let width, height;
-
-  function resize() {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = document.body.scrollHeight;
-  }
-
-  window.addEventListener("load", resize);
-  window.addEventListener("resize", resize);
-  const observer = new ResizeObserver(resize);
-  observer.observe(document.body);
-
-  function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-  }
-
-  class Bubble {
-    constructor() {
-      this.reset(true);
-    }
-    reset(initial = false) {
-      this.x = Math.random() * width;
-      this.y = initial ? Math.random() * height : height + 200;
-      this.r = 80 + Math.random() * 150;
-      this.z = 0.3 + Math.random() * 0.7;
-      this.speed = 0.1 + Math.random() * 0.5;
-      this.colorBase = Math.random() > 0.5 ? [130, 228, 255] : [255, 179, 246];
-      this.timer = 0;
-      this.life = 8000;
-      this.fadeDuration = 1000;
-    }
-    update(dt) {
-      this.y -= this.speed * this.z * dt;
-      this.timer += dt;
-      if (this.y + this.r < 0 || this.timer > this.life) {
-        this.reset();
-      }
-    }
-    draw(ctx) {
-      const progress = this.timer / this.life;
-      let alpha = 0.15;
-      let scale = this.z;
-      if (this.timer < this.fadeDuration) {
-        const t = this.timer / this.fadeDuration;
-        alpha *= easeOutCubic(t);
-        scale *= 0.5 + 0.5 * easeOutCubic(t);
-      } else if (this.timer > this.life - this.fadeDuration) {
-        const t = (this.life - this.timer) / this.fadeDuration;
-        alpha *= easeOutCubic(t);
-        scale *= 0.5 + 0.5 * easeOutCubic(t);
-      }
-      ctx.beginPath();
-      ctx.fillStyle = `rgba(${this.colorBase[0]}, ${this.colorBase[1]}, ${this.colorBase[2]}, ${alpha})`;
-      ctx.arc(this.x, this.y, this.r * scale, 0, Math.PI * 2);
-      ctx.fill();
-    }
-  }
-
-  const bubbles = Array.from({ length: 40 }, () => new Bubble());
-  let lastTime = performance.now();
-
-  function animate(now) {
-    const dt = now - lastTime;
-    lastTime = now;
-    ctx.clearRect(0, 0, width, height);
-    bubbles.forEach(b => {
-      b.update(dt);
-      b.draw(ctx);
-    });
-    requestAnimationFrame(animate);
-  }
-
-  animate(lastTime);
-</script>
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-<script>
-  document.addEventListener('click', (e) => {
-    confetti({
-      origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
-      particleCount: 50,
-      startVelocity: 15,
-      spread: 360,
-      scalar: 0.6,
-      ticks: 80,
-      gravity: 0.7,
-      decay: 0.9
-    });
-  });
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
-  });
-</script>
+<div id="sceneManager">
+  <strong>Scenes</strong>
+  <div id="sceneList"></div>
+</div>
 </body>
 </html>
